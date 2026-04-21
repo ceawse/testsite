@@ -2,26 +2,25 @@ const websiteScraper = require('website-scraper');
 const PuppeteerPlugin = require('website-scraper-puppeteer');
 const path = require('path');
 
-// Исправляем импорты для новых версий библиотек
 const scrape = websiteScraper.default || websiteScraper;
 const PluginClass = PuppeteerPlugin.default || PuppeteerPlugin;
 
 async function start() {
-    const destDir = path.resolve(__dirname, 'ychangers-clone');
+    // ВАЖНО: Удали папку ychangers-main вручную перед запуском!
+    const destDir = path.resolve(__dirname, 'ychangers-main');
 
     try {
-        console.log("Начинаю скачивание... Откроется окно браузера.");
+        console.log("Начинаю скачивание ГЛАВНОЙ страницы...");
 
         await scrape({
             urls: ['https://ychangers.com/en/'],
             directory: destDir,
-            recursive: true,
-            maxRecursiveDepth: 2,
-            requestConcurrency: 1, // Один запрос за раз, чтобы не забанили
+            recursive: false, // ВЫКЛЮЧАЕМ переход по ссылкам
+            requestConcurrency: 1,
             plugins: [
                 new PluginClass({
                     launchOptions: {
-                        headless: false // Ты будешь видеть, как браузер ходит по сайту
+                        headless: false
                     },
                     scrollToBottom: { timeout: 3000, viewportN: 2 }
                 })
@@ -29,13 +28,12 @@ async function start() {
         });
 
         console.log("------------------------------------------");
-        console.log("Успех! Сайт полностью скопирован.");
-        console.log(`Путь к файлам: ${destDir}`);
+        console.log("Успех! Главная страница сохранена в ychangers-main");
         console.log("------------------------------------------");
 
     } catch (err) {
         if (err.message.includes('directory') && err.message.includes('exists')) {
-            console.error("ОШИБКА: Папка 'ychangers-clone' уже существует. Удали её перед запуском!");
+            console.error("ОШИБКА: Папка уже существует. Удали её!");
         } else {
             console.error("Произошла ошибка:", err);
         }
