@@ -1,43 +1,56 @@
-const websiteScraper = require('website-scraper');
-const PuppeteerPlugin = require('website-scraper-puppeteer');
-const path = require('path');
-
-const scrape = websiteScraper.default || websiteScraper;
-const PluginClass = PuppeteerPlugin.default || PuppeteerPlugin;
-
-async function start() {
-    // ВАЖНО: Удали папку ychangers-main вручную перед запуском!
-    const destDir = path.resolve(__dirname, 'ychangers-main');
-
-    try {
-        console.log("Начинаю скачивание ГЛАВНОЙ страницы...");
-
-        await scrape({
-            urls: ['https://ychangers.com/en/'],
-            directory: destDir,
-            recursive: false, // ВЫКЛЮЧАЕМ переход по ссылкам
-            requestConcurrency: 1,
-            plugins: [
-                new PluginClass({
-                    launchOptions: {
-                        headless: false
-                    },
-                    scrollToBottom: { timeout: 3000, viewportN: 2 }
-                })
-            ]
-        });
-
-        console.log("------------------------------------------");
-        console.log("Успех! Главная страница сохранена в ychangers-main");
-        console.log("------------------------------------------");
-
-    } catch (err) {
-        if (err.message.includes('directory') && err.message.includes('exists')) {
-            console.error("ОШИБКА: Папка уже существует. Удали её!");
-        } else {
-            console.error("Произошла ошибка:", err);
-        }
-    }
+let scrape = require('website-scraper');
+// Если scrape загрузился как объект, берем из него .default
+if (typeof scrape !== 'function' && scrape.default) {
+    scrape = scrape.default;
 }
 
-start();
+let PuppeteerPlugin = require('website-scraper-puppeteer');
+if (typeof PuppeteerPlugin !== 'function' && PuppeteerPlugin.default) {
+    PuppeteerPlugin = PuppeteerPlugin.default;
+}
+
+const path = require('path');
+const fs = require('fs');
+
+const dir = path.resolve(__dirname, 'ychangers_site');
+
+// ВАЖНО: website-scraper выдаст ошибку, если папка уже существует.
+// Удаляем папку перед запуском, если она есть.
+if (fs.existsSync(dir)) {
+    fs.rmSync(dir, { recursive: true, force: true });
+}
+
+const options = {
+  urls: ['https://ychangers.com/'],
+  directory: dir,
+  recursive: false,
+  plugins: [
+    new PuppeteerPlugin({
+      launchOptions: {
+        headless: "new"
+      },
+      scrollToBottom: { timeout: 10000, viewportN: 10 }
+    })
+  ],
+  sources: [
+    {selector: 'img', attr: 'src'},
+    {selector: 'link[rel="stylesheet"]', attr: 'href'},
+    {selector: 'script', attr: 'src'},
+    {selector: 'link[rel*="icon"]', attr: 'href'}
+  ],
+  subdirectories: [
+    {directory: 'img', extensions: ['.jpg', '.png', '.svg', '.gif', '.webp']},
+    {directory: 'js', extensions: ['.js']},
+    {directory: 'css', extensions: ['.css']},
+    {directory: 'fonts', extensions: ['.woff', '.woff2', '.ttf']}
+  ],
+};
+
+console.log("Начинаю загрузку... Это может занять около 30 секунд.");
+
+scrape(options).then(() => {
+  console.log("Готово! Проверь папку ychangers_site");
+}).catch((err) => {
+  console.error("Произошла ошибка во время выполнения:");
+  console.error(err);
+});

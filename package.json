@@ -11,6 +11,9 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "fs-extra": "^11.3.4",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "website-scraper": "^6.0.0",
     "website-scraper-puppeteer": "^2.0.0"
   }
