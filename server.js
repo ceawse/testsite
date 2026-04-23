@@ -3,18 +3,19 @@ const path = require('path');
 const axios = require('axios');
 const app = express();
 
+// --- ВНИМАНИЕ: Проверь имя папки! ---
+// В начале чата ты писал 'ychangers_site_main', в коде ниже 'ychangers_site'.
+// Укажи здесь точное имя папки, где лежат твои файлы.
 const sitePath = path.join(__dirname, 'ychangers_site');
 
-// Парсеры данных
+// Парсеры (нужны для работы прокси)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 1. УНИВЕРСАЛЬНЫЙ ПРОКСИ
-// Используем регулярное выражение /.*/ вместо строк, чтобы избежать ошибок синтаксиса
+// 1. ПРОКСИ ДЛЯ КУРСОВ (Ловим POST запросы от калькулятора)
 app.post(/.*/, async (req, res, next) => {
-    // Если в запросе есть action, значит это наш калькулятор
     if (req.body && req.body.action) {
-        console.log(`[PROXY] Запрос: ${req.body.action} -> ${req.path}`);
+        console.log(`[API] Запрос курса: ${req.body.action} на ${req.path}`);
         try {
             const response = await axios({
                 method: 'post',
@@ -23,27 +24,19 @@ app.post(/.*/, async (req, res, next) => {
                 headers: {
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) rv:120.0',
                     'X-Requested-With': 'XMLHttpRequest',
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Origin': 'https://ychangers.com',
-                    'Referer': `https://ychangers.com${req.path}`
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
             });
             return res.json(response.data);
         } catch (error) {
-            console.error('[PROXY ERROR]:', error.message);
-            return res.status(500).json({ error: 'Original API is not responding' });
+            console.error('[API ERROR]:', error.message);
+            return res.status(500).json({ error: 'Original API error' });
         }
     }
     next();
 });
 
-// 2. ТВОЯ СТАТИКА
-app.use(express.static(sitePath, {
-    extensions: ['html'],
-    index: 'index.html'
-}));
-
-// 3. ТВОИ РЕДИРЕКТЫ
+// 2. РЕДИРЕКТ (Убираем index.html из адресной строки для красоты)
 app.use((req, res, next) => {
     if (req.url.endsWith('/index.html')) {
         const newPath = req.url.replace(/\/index\.html$/, '/');
@@ -52,22 +45,33 @@ app.use((req, res, next) => {
     next();
 });
 
+// 3. СТАТИКА (Раздаем твои HTML, CSS, Картинки)
+app.use(express.static(sitePath, {
+    extensions: ['html'],
+    index: 'index.html'
+}));
+
+// 4. ГЛАВНАЯ СТРАНИЦА (Редирект с / на /en/)
 app.get('/', (req, res) => {
     res.redirect('/en/');
 });
 
-// 4. ТВОЯ ОБРАБОТКА ОШИБОК
+// 5. ОБРАБОТКА ОШИБОК (Чтобы не было белого экрана 204)
 app.use((req, res) => {
-    res.status(204).end();
+    console.log(`[404] Файл не найден: ${req.url}`);
+    // Вместо 204 (пустоты) лучше отдавать 404 или главную страницу
+    res.status(404).send('Page not found. Check if the folder ychangers_site exists.');
 });
 
 app.use((err, req, res, next) => {
-    console.error('Server Error:', err.message);
-    res.status(204).end();
+    console.error('[SERVER ERROR]:', err.stack);
+    res.status(500).send('Internal Server Error');
 });
 
-app.listen(3000, () => {
-    console.log('-------------------------------------------');
-    console.log('СЕРВЕР РАБОТАЕТ: http://localhost:3000');
-    console.log('-------------------------------------------');
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`===========================================`);
+    console.log(`СЕРВЕР РАБОТАЕТ: http://localhost:${PORT}`);
+    console.log(`ПУТЬ К ФАЙЛАМ: ${sitePath}`);
+    console.log(`===========================================`);
 });
