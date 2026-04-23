@@ -5475,4 +5475,80 @@ Subscribe to our channel <a style="color:white" href="index.html" target="_blank
 		});
 	</script>
 
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			let debounceTimer;
+			const PROXY_URL = '/api/exchange'; // Запрос идет на наш сервер
+
+			// Функция обновления данных
+			async function updateRates(direction = 'from') {
+				const c1 = document.querySelector('input[name="c1"]').value;
+				const c2 = document.querySelector('input[name="c2"]').value;
+				const fromInput = document.getElementById('from_summ');
+				const toInput = document.getElementById('to_summ');
+
+				const amount = direction === 'from' ? fromInput.value : toInput.value;
+				if (!c1 || !c2) return;
+
+				const body = {
+					action: 'validator_paymets',
+					c1: c1,
+					c2: c2,
+					dir: direction,
+					amount: amount || '',
+					query_version: '1.1',
+					url: '/'
+				};
+
+				try {
+					const response = await fetch(PROXY_URL, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+						body: new URLSearchParams(body)
+					});
+
+					const result = await response.json();
+
+					if (result.data && result.data.status === "success") {
+						const course = result.data.course.s2;
+
+						// Обновляем второе поле в зависимости от курса
+						if (direction === 'from' && fromInput.value) {
+							toInput.value = (parseFloat(fromInput.value) * course).toFixed(6);
+						} else if (direction === 'to' && toInput.value) {
+							fromInput.value = (parseFloat(toInput.value) / course).toFixed(6);
+						}
+
+						// Обновляем инфо о лимитах (текст под полями)
+						const infoBox = document.querySelector('.home-change__tab-content-sub');
+						if (infoBox) infoBox.innerHTML = result.data.left_info;
+					}
+				} catch (err) {
+					console.error("Rate update failed", err);
+				}
+			}
+
+			// Слушатели ввода (с задержкой 600мс, чтобы не спамить API)
+			const inputs = ['from_summ', 'to_summ'];
+			inputs.forEach(id => {
+				const el = document.getElementById(id);
+				if (el) {
+					el.addEventListener('input', (e) => {
+						const dir = id === 'from_summ' ? 'from' : 'to';
+						clearTimeout(debounceTimer);
+						debounceTimer = setTimeout(() => updateRates(dir), 600);
+					});
+				}
+			});
+
+			// Слушатель кликов по валютам (когда меняем иконку)
+			document.addEventListener('click', (e) => {
+				if (e.target.closest('.home-change__list-item')) {
+					// Ждем 100мс, чтобы оригинальные скрипты сайта успели записать ID в hidden input
+					setTimeout(() => updateRates('from'), 200);
+				}
+			});
+		});
+	</script>
+
 </body></html>
